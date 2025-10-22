@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revelación de Género – Niño o Niña</title>
+  <style>
+    body {
+      margin:0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #ffb6c1, #87cefa);
+      color:#fff;
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      height:100vh;
+    }
+    h1{font-size:2.3em;margin-bottom:8px;}
+    h2{font-size:1.6em;margin-bottom:25px;}
+    .countdown{display:flex;gap:15px;margin-bottom:30px;font-size:1.8em;}
+    .unit{background:rgba(255,255,255,0.3);padding:15px 25px;border-radius:12px;}
+    iframe{width:360px;height:215px;border:none;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+    @media(min-width:768px){iframe{width:560px;height:315px;}}
+    #overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 1.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 10;
+    }
+    #overlay button {
+      margin-top: 15px;
+      background: #fff;
+      color: #333;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <div id="overlay">
+    <div>🎵 Toca para iniciar la revelación 🎵</div>
+    <button onclick="startReveal()">Iniciar</button>
+  </div>
+
+  <h1>🎉 Revelación de Género 🎉</h1>
+  <h2>Niño o Niña 💙❤️</h2>
+
+  <div class="countdown">
+    <div class="unit"><span id="days">0</span><br>Días</div>
+    <div class="unit"><span id="hours">00</span><br>Horas</div>
+    <div class="unit"><span id="minutes">00</span><br>Minutos</div>
+    <div class="unit"><span id="seconds">00</span><br>Segundos</div>
+  </div>
+
+  <iframe id="ytplayer" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+  <script>
+    const overlay = document.getElementById('overlay');
+    const player = document.getElementById('ytplayer');
+
+    function startReveal(){
+      overlay.style.display = 'none';
+      player.src = "https://www.youtube.com/embed/0zTuPXioCZk?autoplay=1&controls=1";
+    }
+
+    // Countdown hasta el 25 de octubre
+    const now = new Date();
+    let targetYear = now.getFullYear();
+    let target = new Date(targetYear, 9, 25, 0, 0, 0);
+    if(now > target) target = new Date(targetYear + 1, 9, 25, 0, 0, 0);
+
+    function updateCountdown(){
+      const diff = target - new Date();
+      if(diff <= 0){
+        document.querySelector('.countdown').innerHTML = "🎊 ¡El gran día ha llegado! 🎊";
+        return;
+      }
+      const d = Math.floor(diff / (1000*60*60*24));
+      const h = Math.floor((diff / (1000*60*60)) % 24);
+      const m = Math.floor((diff / (1000*60)) % 60);
+      const s = Math.floor((diff / 1000) % 60);
+      document.getElementById('days').textContent = d;
+      document.getElementById('hours').textContent = h.toString().padStart(2,'0');
+      document.getElementById('minutes').textContent = m.toString().padStart(2,'0');
+      document.getElementById('seconds').textContent = s.toString().padStart(2,'0');
+    }
+    setInterval(updateCountdown,1000);
+    updateCountdown();
+  </script>
+</body>
+</html>
