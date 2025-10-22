@@ -112,77 +112,78 @@
   <div class="totales">
     <p>Total Niño: <span id="totalNiño">0</span> | Total Niña: <span id="totalNiña">0</span></p>
   </div>
+<script>
+  // ✅ URL de tu Apps Script (sin allorigins)
+  const API_URL = "https://script.google.com/macros/s/AKfycbztKzwCRd4Fm6tVlnPt-IlFZyVH6rgx1XvqppbmuNuYCDZ1tMi9P-BfSH_AhIQ94oKO/exec";
+  const overlay = document.getElementById('overlay');
+  const player = document.getElementById('ytplayer');
 
-  <script>
-   const API_URL = "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://script.google.com/macros/s/AKfycbyiQM9aG2j30SJjY64cNoudBrSvd98BFeybVGte25Pr_cNkKgRTdfkG5pP4K8ppNIe3/exec");
-    const overlay = document.getElementById('overlay');
-    const player = document.getElementById('ytplayer');
+  function startReveal() {
+    overlay.style.display = 'none';
+    player.src = "https://www.youtube.com/embed/0zTuPXioCZk?autoplay=1&mute=0&controls=1";
+  }
 
-    // 🎵 Iniciar revelación
-    function startReveal() {
-      overlay.style.display = 'none';
-      player.src = "https://www.youtube.com/embed/0zTuPXioCZk?autoplay=1&mute=0&controls=1";
+  const now = new Date();
+  let targetYear = now.getFullYear();
+  let target = new Date(targetYear, 9, 25, 0, 0, 0);
+  if (now > target) target = new Date(targetYear + 1, 9, 25, 0, 0, 0);
+
+  function updateCountdown() {
+    const diff = target - new Date();
+    if (diff <= 0) {
+      document.querySelector('.countdown').innerHTML = "🎊 ¡El gran día ha llegado! 🎊";
+      return;
+    }
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const m = Math.floor((diff / (1000 * 60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+    document.getElementById('days').textContent = d;
+    document.getElementById('hours').textContent = h.toString().padStart(2, '0');
+    document.getElementById('minutes').textContent = m.toString().padStart(2, '0');
+    document.getElementById('seconds').textContent = s.toString().padStart(2, '0');
+  }
+  setInterval(updateCountdown, 1000);
+  updateCountdown();
+
+  // 🗳️ Enviar voto
+  async function votar(tipo) {
+    const votoGuardado = localStorage.getItem('votoRevelacion');
+    if (votoGuardado) {
+      alert("Ya votaste por: " + votoGuardado);
+      return;
     }
 
-    // ⏳ Cuenta regresiva hasta el 25 de octubre
-    const now = new Date();
-    let targetYear = now.getFullYear();
-    let target = new Date(targetYear, 9, 25, 0, 0, 0);
-    if (now > target) target = new Date(targetYear + 1, 9, 25, 0, 0, 0);
-
-    function updateCountdown() {
-      const diff = target - new Date();
-      if (diff <= 0) {
-        document.querySelector('.countdown').innerHTML = "🎊 ¡El gran día ha llegado! 🎊";
-        return;
-      }
-      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const m = Math.floor((diff / (1000 * 60)) % 60);
-      const s = Math.floor((diff / 1000) % 60);
-      document.getElementById('days').textContent = d;
-      document.getElementById('hours').textContent = h.toString().padStart(2, '0');
-      document.getElementById('minutes').textContent = m.toString().padStart(2, '0');
-      document.getElementById('seconds').textContent = s.toString().padStart(2, '0');
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ voto: tipo }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      console.log("Respuesta:", data);
+      localStorage.setItem('votoRevelacion', tipo);
+      alert("¡Gracias por votar por " + tipo + "! 💖");
+      obtenerTotales();
+    } catch (error) {
+      console.error("Error enviando voto:", error);
     }
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
+  }
 
-    // 🗳️ Votar (solo una vez por dispositivo)
-    async function votar(tipo) {
-      const votoGuardado = localStorage.getItem('votoRevelacion');
-      if (votoGuardado) {
-        alert("Ya votaste por: " + votoGuardado);
-        return;
-      }
-
-      try {
-        await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify({ voto: tipo }),
-          headers: { "Content-Type": "application/json" }
-        });
-        localStorage.setItem('votoRevelacion', tipo);
-        alert("¡Gracias por votar por " + tipo + "! 💖");
-        obtenerTotales();
-      } catch (error) {
-        console.error("Error enviando voto:", error);
-      }
+  // 📊 Obtener totales desde Google Sheets
+  async function obtenerTotales() {
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      document.getElementById("totalNiño").textContent = data.niño || 0;
+      document.getElementById("totalNiña").textContent = data.niña || 0;
+    } catch (error) {
+      console.error("Error al obtener totales:", error);
     }
+  }
 
-    // 📊 Obtener totales desde Google Sheets
-    async function obtenerTotales() {
-      try {
-        const res = await fetch(API_URL);
-        const data = await res.json();
-        document.getElementById("totalNiño").textContent = data.niño || 0;
-        document.getElementById("totalNiña").textContent = data.niña || 0;
-      } catch (error) {
-        console.error("Error al obtener totales:", error);
-      }
-    }
+  obtenerTotales();
+</script>
 
-    obtenerTotales();
-  </script>
 </body>
 </html>
