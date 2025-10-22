@@ -3,31 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>💙💗 Revelación de Género 💗💙</title>
+  <title>🎉 Revelación de Género – Niño o Niña 💙💗</title>
   <style>
-    /* ----- Estilos generales ----- */
     body {
       margin: 0;
       font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #ffb6c1, #87cefa);
+      color: #fff;
       text-align: center;
-      background: linear-gradient(to bottom right, #b3e0ff, #ffe0f0);
-      color: #333;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: start;
       min-height: 100vh;
-      justify-content: flex-start;
       overflow-x: hidden;
+      padding: 15px;
     }
 
-    h1 {
-      font-size: 1.8rem;
-      margin: 1.2rem 0 0.5rem 0;
-      color: #333;
-      text-shadow: 1px 1px 2px #fff;
+    h1 { font-size: 2em; margin-top: 15px; }
+    h2 { font-size: 1.4em; margin-bottom: 20px; }
+
+    /* ----- Countdown ----- */
+    .countdown {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 1.3em;
+      flex-wrap: wrap;
+    }
+    .unit {
+      background: rgba(255, 255, 255, 0.3);
+      padding: 10px 15px;
+      border-radius: 10px;
+      width: 80px;
     }
 
-    /* ----- Video responsivo ----- */
+    /* ----- Video ----- */
     .video-container {
       position: relative;
       width: 100%;
@@ -36,10 +48,9 @@
       padding-bottom: 56.25%;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      margin-top: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      margin-bottom: 25px;
     }
-
     iframe {
       position: absolute;
       top: 0; left: 0;
@@ -47,132 +58,154 @@
       border: none;
     }
 
-    /* ----- Botones ----- */
+    /* ----- Botones de voto ----- */
     .botones {
-      margin-top: 25px;
       display: flex;
-      gap: 15px;
       justify-content: center;
+      gap: 15px;
       flex-wrap: wrap;
     }
-
     button {
-      font-size: 1.3rem;
-      padding: 12px 30px;
+      font-size: 1.1rem;
+      padding: 12px 25px;
       border: none;
-      border-radius: 20px;
+      border-radius: 15px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: 0.3s;
       font-weight: bold;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      color: #fff;
     }
-
-    .niño {
-      background-color: #4da6ff;
-      color: white;
-    }
-
-    .niña {
-      background-color: #ff66b2;
-      color: white;
-    }
-
-    button:active {
-      transform: scale(0.95);
-    }
+    .niño { background-color: #4da6ff; }
+    .niña { background-color: #ff66b2; }
+    button:hover { opacity: 0.85; }
 
     /* ----- Totales ----- */
     .totales {
-      margin-top: 25px;
-      font-size: 1.2rem;
+      margin-top: 20px;
+      font-size: 1.1rem;
       font-weight: bold;
+      color: #fff;
+    }
+
+    /* ----- Overlay ----- */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 1.4em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 10;
+    }
+    #overlay button {
+      margin-top: 15px;
+      background: #fff;
       color: #333;
-      text-align: center;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
     }
 
-    .totales span {
-      display: inline-block;
-      min-width: 40px;
-      color: #000;
-    }
-
-    /* ----- Adaptación móvil ----- */
     @media (max-width: 600px) {
-      h1 {
-        font-size: 1.5rem;
-      }
-      button {
-        font-size: 1.1rem;
-        padding: 10px 25px;
-      }
-      .totales {
-        font-size: 1rem;
-      }
+      h1 { font-size: 1.7em; }
+      h2 { font-size: 1.2em; }
+      button { font-size: 1rem; padding: 10px 20px; }
+      .unit { width: 70px; font-size: 0.9em; }
     }
   </style>
 </head>
 <body>
-
-  <h1>🎉 ¡Revelación de Género! 💙 o 💗</h1>
-
-  <!-- Video de YouTube -->
-  <div class="video-container">
-    <iframe 
-      id="video"
-      src="https://www.youtube.com/embed/0zTuPXioCZk?autoplay=1&mute=0&loop=1&playlist=0zTuPXioCZk" 
-      allow="autoplay; fullscreen">
-    </iframe>
+  <!-- Overlay para iniciar -->
+  <div id="overlay">
+    <div>🎵 Toca para iniciar la revelación 🎵</div>
+    <button onclick="startReveal()">Iniciar</button>
   </div>
 
-  <!-- Botones de votación -->
+  <h1>🎉 Revelación de Género 🎉</h1>
+  <h2>Niño o Niña 💙💗</h2>
+
+  <!-- Cuenta regresiva -->
+  <div class="countdown">
+    <div class="unit"><span id="days">0</span><br>Días</div>
+    <div class="unit"><span id="hours">00</span><br>Horas</div>
+    <div class="unit"><span id="minutes">00</span><br>Minutos</div>
+    <div class="unit"><span id="seconds">00</span><br>Segundos</div>
+  </div>
+
+  <!-- Video -->
+  <div class="video-container">
+    <iframe id="ytplayer" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+
+  <!-- Votación -->
   <div class="botones">
     <button class="niño" onclick="votar('niño')">💙 Niño</button>
     <button class="niña" onclick="votar('niña')">💗 Niña</button>
   </div>
 
-  <!-- Totales -->
   <div class="totales">
-    <p>💙 Total Niño: <span id="totalNiño">0</span></p>
-    <p>💗 Total Niña: <span id="totalNiña">0</span></p>
+    <p>💙 Votos Niño: <span id="votosNiño">0</span></p>
+    <p>💗 Votos Niña: <span id="votosNiña">0</span></p>
   </div>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+  <script>
+    const overlay = document.getElementById('overlay');
+    const player = document.getElementById('ytplayer');
 
-    // ⚙️ Reemplaza con tu configuración Firebase
-    const firebaseConfig = {
-      apiKey: "TU_API_KEY",
-      authDomain: "TU_DOMINIO.firebaseapp.com",
-      databaseURL: "https://TU_DATABASE_URL.firebaseio.com",
-      projectId: "TU_PROJECT_ID",
-      storageBucket: "TU_BUCKET.appspot.com",
-      messagingSenderId: "TU_SENDER_ID",
-      appId: "TU_APP_ID"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // Función de votación
-    function votar(tipo) {
-      push(ref(db, "votos"), { tipo });
+    // 🔊 Iniciar revelación
+    function startReveal(){
+      overlay.style.display = 'none';
+      player.src = "https://www.youtube.com/embed/0zTuPXioCZk?autoplay=1&controls=1";
     }
 
-    // Mostrar totales en tiempo real
-    const votosRef = ref(db, "votos");
-    onValue(votosRef, (snapshot) => {
-      const data = snapshot.val() || {};
-      let niño = 0, niña = 0;
-      Object.values(data).forEach(v => {
-        if (v.tipo === "niño") niño++;
-        else if (v.tipo === "niña") niña++;
-      });
-      document.getElementById("totalNiño").innerText = niño;
-      document.getElementById("totalNiña").innerText = niña;
-    });
-  </script>
+    // 🕒 Cuenta regresiva hasta el 25 de octubre
+    const now = new Date();
+    let targetYear = now.getFullYear();
+    let target = new Date(targetYear, 9, 25, 0, 0, 0);
+    if(now > target) target = new Date(targetYear + 1, 9, 25, 0, 0, 0);
 
+    function updateCountdown(){
+      const diff = target - new Date();
+      if(diff <= 0){
+        document.querySelector('.countdown').innerHTML = "🎊 ¡El gran día ha llegado! 🎊";
+        return;
+      }
+      const d = Math.floor(diff / (1000*60*60*24));
+      const h = Math.floor((diff / (1000*60*60)) % 24);
+      const m = Math.floor((diff / (1000*60)) % 60);
+      const s = Math.floor((diff / 1000) % 60);
+      document.getElementById('days').textContent = d;
+      document.getElementById('hours').textContent = h.toString().padStart(2,'0');
+      document.getElementById('minutes').textContent = m.toString().padStart(2,'0');
+      document.getElementById('seconds').textContent = s.toString().padStart(2,'0');
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // 💙💗 Sistema de votación local
+    const votos = JSON.parse(localStorage.getItem("votosGenero") || '{"niño":0,"niña":0}');
+    const votoRealizado = localStorage.getItem("votoHecho");
+
+    document.getElementById("votosNiño").textContent = votos.niño;
+    document.getElementById("votosNiña").textContent = votos.niña;
+
+    function votar(tipo) {
+      if (votoRealizado) {
+        alert("Ya realizaste tu voto 💕");
+        return;
+      }
+      votos[tipo]++;
+      localStorage.setItem("votosGenero", JSON.stringify(votos));
+      localStorage.setItem("votoHecho", tipo);
+      document.getElementById("votosNiño").textContent = votos.niño;
+      document.getElementById("votosNiña").textContent = votos.niña;
+      alert("Gracias por votar por " + tipo + " 🎉");
+    }
+  </script>
 </body>
 </html>
